@@ -1,0 +1,8 @@
+#==hosts==#
+[local]
+localhost ansible_connection=local
+[devops.uttc-usa.com]
+10.12.0.151
+#devops.uttc-usa.com
+
+
