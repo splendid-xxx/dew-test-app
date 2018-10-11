@@ -1,163 +1,149 @@
 --- 
- - name: Install nginx+madiadb+php-fpm stack on centos 
-#hosts: localhost
-   hosts: devops.uttc-usa.com
-   become: true
-   tasks:
-
-#  tasks:
-#  - name: install net-tools
-#    yum:
-#     name: net-tools
-#     state: present
-
-#  tasks:
-#  - name: install telnet
-#    yum:
-#     name: telnet
-#     state: present
+- name: Install nginx+madiadb+php-fpm stack on centos 
+  hosts: localhost
+  become: true
 
 
-#  tasks:
-#  - name: install nano
-#    yum:
-#      name: nano
-#      state: present
+  tasks:
+  - name: update centos
+    yum:
+      name: update -y
+      state: yes
 
-#  tasks:
-#  - name: install tmux
-#    yum:
-#      name: tmux
-#      state: present
+  tasks:
+  - name: install htop
+    yum:
+      name: htop
+      state: present
 
-  
- 
- - name: Add epel-release repo
-   yum:
-     name: epel-release
-     state: present
+  tasks:
+  - name: install nano
+    yum:
+      name: nano
+      state: present
+
+  tasks:
+  - name: install vim
+    yum:
+      name: vim
+      state: present
 
 
-#  tasks:
-#  - name: install net-tools
-#    yum:
-#      name: net-tools
-#      state: present
+  tasks:
+  - name: install tmux
+    yum:
+      name: tmux
+      state: present
 
-#  tasks:
-#  - name: install telnet
-#    yum:
-#      name: telnet
-#      state: present
 
-#  tasks:
-#  - name: Add epel-release repo
-#    yum:
-#      name: epel-release
-#      state: present
 
- - name: Install nginx
-   yum:
-     name: nginx
-     state: present
+  tasks:
+  - name: install net-tools
+    yum:
+      name: net-tools
+      state: present
 
- - name: Enable nginx
-   systemd:
-     name: nginx
-     enabled: yes
+  tasks:
+  - name: install telnet
+    yum:
+      name: telnet
+      state: present
 
- - name: Insert Index.php Devops devops.uttc-usa.com
-   template:
+  tasks:
+  - name: Add epel-release repo
+    yum:
+      name: epel-release
+      state: present
+
+  - name: Install nginx
+    yum:
+      name: nginx
+      state: present
+
+  - name: Enable nginx
+    systemd:
+      name: nginx
+      enabled: yes
+
+  - name: Insert Index.php Devops devops.uttc-usa.com
+    template:
       src: index.php
       dest: /var/www/devops.uttc-usa.com/index.php
 
- - name: install letsencrypt
-   yum: 
-     name: letsencrypt 
-     state: latest
+  - name: install letsencrypt
+    yum: 
+      name: letsencrypt 
+      state: latest
 
- - name: create letsencrypt directory
-   file: name=/var/www/letsencrypt state=directory
+  - name: create letsencrypt directory
+    file: 
+     name: /var/www/letsencrypt 
+     state: directory
 
- - name: Remove default nginx config
-   file: name=/etc/nginx/sites-enabled/default state=absent
+  - name: Remove default nginx config
+    file: 
+      name: /etc/nginx/sites-enabled/default  
+      state: absent
 
- - name: Install system nginx config
-   template:
-       src: templates/nginx.conf.j2
+  - name: Install system nginx config
+    template:
+       src: templates/nginx.conf
        dest: /etc/nginx/nginx.conf
 
- - name: Install nginx site for letsencrypt requests
-   template:
-        src: templates/nginx-http.j2
-        dest: /etc/nginx/sites-enabled/http
+#  - name: Install nginx site for letsencrypt requests
+#    template:
+#        src: templates/nginx-http
+#        dest: /etc/nginx/sites-enabled/http
 
- - name: Reload nginx to activate letsencrypt site
-   service: 
-    name: nginx 
-    state: restarted
+#  - name: Create letsencrypt certificate
+#     shell: letsencrypt certonly -n --webroot -w /var/www/letsencrypt -m {{ letsencrypt_email }} --agree-tos -d {{ domain_name }}
+#     args:
+#       creates: /etc/letsencrypt/live/{{ domain_name }}
 
- - name: Create letsencrypt certificate
-   shell: letsencrypt certonly -n --webroot -w /var/www/letsencrypt -m "{{ letsencrypt_email }}" --agree-tos -d "{{ domain_name }}"
-      args:
-       creates: /etc/letsencrypt/live/ "{{ domain_name }}"
-
- - name: Start nginx
+  - name: Start nginx
     service:
       name: nginx
       state: started
 
- - name: Insert MariaDB repo file
-   template:
+  - name: Insert MariaDB repo file
+    template:
       src: mariadb.repo
       dest: /etc/yum.repos.d/mariadb.repo
 
- - name: Install MariaDB-server
-   yum:
-     name: mariadb-server
-     state: present
+  - name: Install MariaDB-server
+    yum:
+      name: mariadb-server
+      state: present
 
- - name: Start MariaDB
-   service:
-     name: mariadb
-     state: started
+  - name: Start MariaDB
+    service:
+      name: mariadb
+      state: started
 
- - name: Enable mariadb
-   systemd:
+  - name: Enable mariadb
+    systemd:
       name: mariadb
       enabled: yes
 
- - name: Create a new database with name 'devops'
-   mysql_db:
-     name: devops
-     state: present    
+  #- name: Create a new database with name "devops"
+  #  mysql_db:
+  #    name: devops
+  #    state: present    
 
- - name: Install php
-   yum:
-     name: php
-     state: present
+  - name: Install php
+    yum:
+      name: php
+      state: present
 
- - name: Install php-mysql
-   yum:
-     name: php-mysql
-     state: present
-
- - name: Install php-fpm
-   yum:
-    with_items:
-      - php7.0-fpm
-      - php7.0-mbstring
-      - php7.0-mysql
-      - php7.0-dev
-      - php7.0-mcrypt
-      - php7.0-curl
-      - imagemagick
-      - php7.0-imagick
-      - php7.0-gd
-      - php7.0-xmlrpc
-    notify:
-      - stop php5-fpm
-      - restart php7.0-fpm
+  - name: Install php-mysql
+    yum:
+      name: php-mysql
+      state: present
+      
+  - name: Install php-fpm
+    yum:
+      name: php-fpm
+      state: present
 
   - name: Ensure "cgi.fix_pathinfo=0" in /etc/php.ini
     ini_file:
@@ -166,49 +152,49 @@
       option: cgi.fix_pathinfo
       value: 0
 
-  - name: Ensure "listen = /var/run/php-fpm/php-fpm.sock" in /etc/php-fpm.d/www.conf
+  - name: Ensure "listen = /var/run/php-fpm/php-fpm.sock" in /etc/php-php.d/www.conf
     ini_file:
-      path: /etc/php-fpm.d/www.conf
+      path: /etc/php-php.d/www.conf
       section: www
       option: listen
       value: /var/run/php-fpm/php-fpm.sock
 
-  - name: Ensure "listen.owner = nobody" in /etc/php-fpm.d/www.conf
+  - name: Ensure "listen.owner = nobody" in /etc/php-php.d/www.conf
     ini_file:
-      path: /etc/php-fpm.d/www.conf
+      path: /etc/php-php.d/www.conf
       section: www
       option: listen.owner
       value: nobody
 
-  - name: Ensure "listen.group = nobody" in /etc/php-fpm.d/www.conf
+  - name: Ensure "listen.group = nobody" in /etc/php-php.d/www.conf
     ini_file:
-      path: /etc/php-fpm.d/www.conf
+      path: /etc/php-php.d/www.conf
       section: www
       option: listen.group
       value: nobody
 
-  - name: Ensure "user = nginx" in /etc/php-fpm.d/www.conf
+  - name: Ensure "user = nginx" in /etc/php-php.d/www.conf
     ini_file:
-      path: /etc/php-fpm.d/www.conf
+      path: /etc/php-php.d/www.conf
       section: www
       option: user
       value: nginx
 
-  - name: Ensure "group = nginx" in /etc/php-fpm.d/www.conf
+  - name: Ensure "group = nginx" in /etc/php-php.d/www.conf
     ini_file:
-      path: /etc/php-fpm.d/www.conf
+      path: /etc/php-php.d/www.conf
       section: www
       option: group
       value: nginx
 
-  - name: Start php7.0-fpm
+  - name: Start php-fpm
     service:
-      name: php7.0-fpm
+      name: php-fpm
       state: started
 
-  - name: Enable php7.0-fpm
+  - name: Enable php-fpm
     systemd:
-      name: php7.0-fpm
+      name: php-fpm
       enabled: yes
 
   - name: Insert nginx conf
@@ -216,7 +202,7 @@
       src: nginx.conf
       dest: /etc/nginx/conf.d/devops.uttc-usa.com.conf
 
-  - name: Insert phpinfo.php page
-   template:
-      src: phpinfo.php
-      dest: /usr/share/nginx/html/phpinfo.php
+ # - name: Insert phpinfo.php page
+ #  #  template:
+ #   #     src: phpinfo.php
+ #    #     dest: /usr/share/nginx/html/phpinfo.php
