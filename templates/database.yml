@@ -1,0 +1,5 @@
+---
+- name: Create a new DB devops'
+  mysql_db:
+    name: 'devops
+    state: present
