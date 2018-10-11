@@ -1,22 +1,21 @@
 <?php
-
-$hostname = "devops.uttc-usa.com";
-$username = "root";
-$password = "";
-$db = "devops";
-
-$dbconnect=mysqli_connect($hostname,$username,$password,$db);
-
-if ($dbconnect->connect_error) {
-  die("Database connection failed: " . $dbconnect->connect_error);
-  }
-?>
-  
-<?php
-  
-  $query = mysqli_query($dbconnect, "SELECT * FROM Test where id=2")
-     or die (mysqli_error($dbconnect));
-     $row = mysqli_fetch_array($query);
-     echo $row['message']
-?>
-
+    $hostname = "devops.uttc-usa.com";
+	$username = "root";
+	    $password = "";
+		$db = "devops";
+		
+			$dbconnect=mysqli_connect($hostname,$username,$password,$db);
+			
+			    if ($dbconnect->connect_error) {
+			        die("Database connection failed: " . $dbconnect->connect_error);
+			    	}
+			    	?>
+			    	
+			    	<?php
+			    	
+			    	    $query = mysqli_query($dbconnect, "SELECT * FROM Test where id=2")
+			    	       or die (mysqli_error($dbconnect));
+			    	        $row = mysqli_fetch_array($query);
+			    	    	echo $row['message']
+			    	    	?>
+			    	    	
