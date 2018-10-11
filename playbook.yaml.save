@@ -90,7 +90,7 @@
 #    template:
 #        src: templates/nginx-http
 #        dest: /etc/nginx/sites-enabled/http
-#
+
 #  - name: Create letsencrypt certificate
 #     shell: letsencrypt certonly -n --webroot -w /var/www/letsencrypt -m {{ letsencrypt_email }} --agree-tos -d {{ domain_name }}
 #     args:
@@ -183,7 +183,8 @@
       option: group
       value: nginx
 
-  - name: Start php-fpm
+  - na
+me: Start php-fpm
     service:
       name: php-fpm
       state: started
@@ -200,5 +201,5 @@
 
  # - name: Insert phpinfo.php page
  #   template:
- #        src: phpinfo.php
- #        dest: /usr/share/nginx/html/phpinfo.php
+ #       src: phpinfo.php
+ #       dest: /usr/share/nginx/html/phpinfo.php
