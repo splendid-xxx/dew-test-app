@@ -183,8 +183,7 @@
       option: group
       value: nginx
 
-  - na
-me: Start php-fpm
+  - name: Start php-fpm
     service:
       name: php-fpm
       state: started
