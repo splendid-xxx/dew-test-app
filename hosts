@@ -2,7 +2,6 @@
 [local]
 #localhost ansible_connection=local
 [devops.uttc-usa.com]
-10.11.12.190
 #devops.uttc-usa.com
 
 
