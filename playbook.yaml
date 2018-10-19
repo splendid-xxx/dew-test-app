@@ -61,6 +61,18 @@
       name: nginx
       enabled: yes
 
+  tasks:
+  - name: create web directory devops.uttc-usa.com
+    file:
+     name: /var/www/devops.uttc-usa.com/
+     state: directory
+     directory_mode: 0770
+
+  - name: Insert Index.php Devops devops.uttc-usa.com
+    template:
+      src: index.php
+      dest: /var/www/devops.uttc-usa.com/index.php
+
   - name: Insert Index.php Devops devops.uttc-usa.com
     template:
       src: index.php
